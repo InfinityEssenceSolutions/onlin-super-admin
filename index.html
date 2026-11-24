@@ -1,0 +1,2780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <title>onlin.in · Super Admin</title>
+  <!-- Font Awesome 6 Free -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    /* ============================================================
+       RESET & GLOBAL TOKENS
+    ============================================================ */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    :root {
+      --primary: #195fa6;
+      --primary-light: #2a7bc9;
+      --primary-dark: #0f4273;
+      --primary-soft: #e9f1fa;
+      --primary-soft-2: #d4e4f5;
+      --bg-body: #f2f6fb;
+      --bg-card: #ffffff;
+      --text-dark: #1a2a3a;
+      --text-muted: #6b7d92;
+      --text-light: #94a6b8;
+      --border-light: #e4ecf5;
+      --success: #1e8e5c;
+      --success-bg: #e2f5eb;
+      --warning: #b37b1e;
+      --warning-bg: #fff2db;
+      --danger: #b33b3b;
+      --danger-bg: #fce9e9;
+      --shadow-sm: 0 2px 8px rgba(25, 95, 166, 0.04);
+      --shadow-md: 0 8px 24px rgba(25, 95, 166, 0.07);
+      --shadow-lg: 0 16px 48px rgba(25, 95, 166, 0.10);
+      --radius: 16px;
+      --radius-sm: 12px;
+      --radius-xs: 8px;
+      --transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+      --sidebar-width: 280px;
+      --sidebar-collapsed: 76px;
+      --header-height: 68px;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--bg-body);
+      color: var(--text-dark);
+      line-height: 1.5;
+      min-height: 100vh;
+      overflow-x: hidden;
+      font-size: 15px;
+    }
+
+    /* ============================================================
+       APP SHELL
+    ============================================================ */
+    .app-shell {
+      display: flex;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    /* ============================================================
+       SIDEBAR
+    ============================================================ */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: #ffffff;
+      border-right: 1px solid var(--border-light);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      z-index: 1000;
+      transition: var(--transition);
+      box-shadow: 2px 0 20px rgba(25, 95, 166, 0.03);
+    }
+
+    .sidebar-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 20px 20px 16px;
+      min-height: var(--header-height);
+      border-bottom: 1px solid var(--border-light);
+      flex-shrink: 0;
+    }
+
+    .brand-mark {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: var(--primary);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 20px;
+      flex-shrink: 0;
+      box-shadow: 0 4px 12px rgba(25, 95, 166, 0.25);
+    }
+
+    .brand-text {
+      font-size: 19px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--primary-dark);
+      white-space: nowrap;
+    }
+
+    .brand-text span {
+      color: var(--primary);
+    }
+
+    .sidebar-nav {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px 12px 24px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--primary-soft-2) transparent;
+    }
+
+    .sidebar-nav::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .sidebar-nav::-webkit-scrollbar-thumb {
+      background: var(--primary-soft-2);
+      border-radius: 4px;
+    }
+
+    .nav-group-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-light);
+      padding: 16px 14px 8px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 14px;
+      border-radius: var(--radius-sm);
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: var(--transition);
+      white-space: nowrap;
+      position: relative;
+      user-select: none;
+      border: 1px solid transparent;
+    }
+
+    .nav-item i {
+      width: 22px;
+      text-align: center;
+      font-size: 15px;
+      color: var(--text-light);
+      transition: var(--transition);
+      flex-shrink: 0;
+    }
+
+    .nav-item:hover {
+      background: var(--primary-soft);
+      color: var(--primary);
+    }
+
+    .nav-item:hover i {
+      color: var(--primary);
+    }
+
+    .nav-item.active {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 6px 16px -4px rgba(25, 95, 166, 0.5);
+    }
+
+    .nav-item.active i {
+      color: #fff;
+    }
+
+    .nav-item .nav-badge {
+      margin-left: auto;
+      background: var(--danger-bg);
+      color: var(--danger);
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 20px;
+    }
+
+    .nav-item.active .nav-badge {
+      background: rgba(255, 255, 255, 0.25);
+      color: #fff;
+    }
+
+    .sidebar-footer {
+      padding: 16px;
+      border-top: 1px solid var(--border-light);
+      flex-shrink: 0;
+    }
+
+    .admin-profile {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px;
+      border-radius: var(--radius-sm);
+      background: var(--primary-soft);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .admin-profile:hover {
+      background: var(--primary-soft-2);
+    }
+
+    .admin-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .admin-info {
+      overflow: hidden;
+    }
+
+    .admin-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-dark);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .admin-role {
+      font-size: 11px;
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    /* ============================================================
+       MAIN CONTENT AREA
+    ============================================================ */
+    .main {
+      flex: 1;
+      margin-left: var(--sidebar-width);
+      transition: var(--transition);
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .topbar {
+      height: var(--header-height);
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      position: sticky;
+      top: 0;
+      z-index: 900;
+      gap: 16px;
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .menu-toggle {
+      display: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: var(--primary-soft);
+      border: none;
+      color: var(--primary);
+      font-size: 18px;
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+      flex-shrink: 0;
+    }
+
+    .menu-toggle:hover {
+      background: var(--primary-soft-2);
+    }
+
+    .page-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-dark);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .topbar-icon-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: transparent;
+      border: 1px solid var(--border-light);
+      color: var(--text-muted);
+      font-size: 15px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .topbar-icon-btn:hover {
+      background: var(--primary-soft);
+      color: var(--primary);
+      border-color: var(--primary-soft-2);
+    }
+
+    .topbar-icon-btn .dot {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 8px;
+      height: 8px;
+      background: var(--danger);
+      border-radius: 50%;
+      border: 2px solid #fff;
+    }
+
+    .badge-super {
+      background: var(--primary-soft);
+      color: var(--primary);
+      padding: 7px 14px;
+      border-radius: 30px;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+      border: 1px solid var(--primary-soft-2);
+    }
+
+    .content-area {
+      padding: 24px;
+      flex: 1;
+    }
+
+    /* ============================================================
+       SIDEBAR OVERLAY (mobile)
+    ============================================================ */
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 30, 50, 0.45);
+      z-index: 999;
+      backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(2px);
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+
+    .sidebar-overlay.active {
+      display: block;
+      opacity: 1;
+    }
+
+    /* ============================================================
+       PAGE / VIEW SYSTEM
+    ============================================================ */
+    .view {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .view.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ============================================================
+       CARDS & GRID
+    ============================================================ */
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      padding: 22px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border-light);
+      transition: var(--transition);
+    }
+
+    .card:hover {
+      box-shadow: var(--shadow-md);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .card-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+
+    .card-title .icon-box {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: var(--primary-soft);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+
+    .card-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    /* ============================================================
+       BUTTONS
+    ============================================================ */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 13px;
+      padding: 10px 18px;
+      cursor: pointer;
+      transition: var(--transition);
+      white-space: nowrap;
+      font-family: inherit;
+      line-height: 1.2;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 4px 14px -4px rgba(25, 95, 166, 0.5);
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+      box-shadow: 0 6px 18px -4px rgba(25, 95, 166, 0.6);
+    }
+
+    .btn-outline {
+      background: #fff;
+      color: var(--primary);
+      border: 1.5px solid var(--primary-soft-2);
+    }
+
+    .btn-outline:hover {
+      background: var(--primary-soft);
+      border-color: var(--primary-light);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid var(--border-light);
+    }
+
+    .btn-ghost:hover {
+      background: var(--primary-soft);
+      color: var(--primary);
+    }
+
+    .btn-danger {
+      background: var(--danger-bg);
+      color: var(--danger);
+    }
+
+    .btn-danger:hover {
+      background: #f9d6d6;
+    }
+
+    .btn-sm {
+      padding: 7px 14px;
+      font-size: 12px;
+      border-radius: 8px;
+    }
+
+    .btn-icon {
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      border-radius: 10px;
+    }
+
+    /* ============================================================
+       STAT GRID / KPI
+    ============================================================ */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    .stat-card {
+      background: #fafcff;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      transition: var(--transition);
+    }
+
+    .stat-card:hover {
+      background: #fff;
+      border-color: var(--primary-soft-2);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .stat-label {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .stat-label i {
+      color: var(--primary-light);
+      font-size: 12px;
+    }
+
+    .stat-value {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--primary-dark);
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+    }
+
+    .stat-trend {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 20px;
+      margin-top: 8px;
+      background: var(--success-bg);
+      color: var(--success);
+    }
+
+    .stat-trend.down {
+      background: var(--danger-bg);
+      color: var(--danger);
+    }
+
+    .stat-trend i {
+      font-size: 9px;
+    }
+
+    /* ============================================================
+       TABLES
+    ============================================================ */
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: thin;
+      scrollbar-color: var(--primary-soft-2) transparent;
+      margin: 0 -4px;
+      padding: 0 4px;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+      height: 5px;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+      background: var(--primary-soft-2);
+      border-radius: 4px;
+    }
+
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      min-width: 520px;
+    }
+
+    table.data-table th {
+      text-align: left;
+      padding: 11px 12px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-light);
+      border-bottom: 1.5px solid var(--border-light);
+      white-space: nowrap;
+      background: #fafcff;
+    }
+
+    table.data-table th:first-child {
+      border-radius: 8px 0 0 8px;
+    }
+
+    table.data-table th:last-child {
+      border-radius: 0 8px 8px 0;
+    }
+
+    table.data-table td {
+      padding: 13px 12px;
+      border-bottom: 1px solid var(--border-light);
+      color: var(--text-dark);
+      font-weight: 500;
+      vertical-align: middle;
+    }
+
+    table.data-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    table.data-table tbody tr {
+      transition: var(--transition);
+    }
+
+    table.data-table tbody tr:hover {
+      background: #f7fafe;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 11px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .status-pill::before {
+      content: '';
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .status-pill.active {
+      background: var(--success-bg);
+      color: var(--success);
+    }
+
+    .status-pill.pending {
+      background: var(--warning-bg);
+      color: var(--warning);
+    }
+
+    .status-pill.disabled {
+      background: var(--danger-bg);
+      color: var(--danger);
+    }
+
+    .status-pill.draft {
+      background: #eef2f6;
+      color: var(--text-muted);
+    }
+
+    /* ============================================================
+       FORM ELEMENTS
+    ============================================================ */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-dark);
+      letter-spacing: 0.01em;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .form-group label .req {
+      color: var(--danger);
+    }
+
+    .form-group label i {
+      color: var(--primary-light);
+      font-size: 12px;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 11px 14px;
+      border-radius: 10px;
+      border: 1.5px solid var(--border-light);
+      background: #fbfdff;
+      font-size: 14px;
+      font-family: inherit;
+      color: var(--text-dark);
+      transition: var(--transition);
+      outline: none;
+    }
+
+    .form-control:focus {
+      border-color: var(--primary);
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(25, 95, 166, 0.12);
+    }
+
+    .form-control::placeholder {
+      color: var(--text-light);
+    }
+
+    textarea.form-control {
+      resize: vertical;
+      min-height: 90px;
+      line-height: 1.6;
+    }
+
+    select.form-control {
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%236b7d92' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      background-size: 10px;
+      padding-right: 36px;
+      cursor: pointer;
+    }
+
+    .form-hint {
+      font-size: 11px;
+      color: var(--text-light);
+      line-height: 1.5;
+    }
+
+    .form-row-2 {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    /* Toggle Switch */
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border-light);
+      gap: 16px;
+    }
+
+    .toggle-row:last-child {
+      border-bottom: none;
+    }
+
+    .toggle-info h4 {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 2px;
+    }
+
+    .toggle-info p {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    .toggle {
+      width: 46px;
+      height: 26px;
+      background: #d9e6f2;
+      border-radius: 30px;
+      position: relative;
+      cursor: pointer;
+      transition: var(--transition);
+      flex-shrink: 0;
+      border: none;
+    }
+
+    .toggle::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: #fff;
+      border-radius: 50%;
+      top: 3px;
+      left: 3px;
+      transition: var(--transition);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
+    }
+
+    .toggle.active {
+      background: var(--primary);
+    }
+
+    .toggle.active::after {
+      left: 23px;
+    }
+
+    /* ============================================================
+       THEME CARDS (with images)
+    ============================================================ */
+    .theme-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .theme-card {
+      border: 2px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      cursor: pointer;
+      transition: var(--transition);
+      background: #fff;
+      position: relative;
+    }
+
+    .theme-card:hover {
+      border-color: var(--primary-light);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .theme-card.active {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(25, 95, 166, 0.15);
+    }
+
+    .theme-preview {
+      height: 100px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .theme-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .theme-check {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: #fff;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .theme-card.active .theme-check {
+      display: flex;
+    }
+
+    .theme-info {
+      padding: 12px 14px;
+    }
+
+    .theme-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 2px;
+    }
+
+    .theme-cat {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    /* ============================================================
+       LOCATION / CATEGORY LIST
+    ============================================================ */
+    .list-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .list-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px;
+      background: #fafcff;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-xs);
+      transition: var(--transition);
+      gap: 10px;
+    }
+
+    .list-item:hover {
+      background: #fff;
+      border-color: var(--primary-soft-2);
+    }
+
+    .list-item-left {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      min-width: 0;
+    }
+
+    .list-item-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: var(--primary-soft);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      flex-shrink: 0;
+    }
+
+    .list-item-text {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--text-dark);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .list-item-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .list-item-actions {
+      display: flex;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .action-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 7px;
+      border: 1px solid var(--border-light);
+      background: #fff;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .action-icon:hover {
+      background: var(--primary-soft);
+      color: var(--primary);
+      border-color: var(--primary-soft-2);
+    }
+
+    .action-icon.danger:hover {
+      background: var(--danger-bg);
+      color: var(--danger);
+      border-color: #f5c6c6;
+    }
+
+    /* ============================================================
+       TABS (in-page)
+    ============================================================ */
+    .sub-tabs {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      margin-bottom: 18px;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .sub-tabs::-webkit-scrollbar {
+      display: none;
+    }
+
+    .sub-tab {
+      padding: 8px 16px;
+      border-radius: 30px;
+      border: 1.5px solid var(--border-light);
+      background: #fff;
+      color: var(--text-muted);
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: var(--transition);
+      font-family: inherit;
+    }
+
+    .sub-tab:hover {
+      border-color: var(--primary-soft-2);
+      color: var(--primary);
+    }
+
+    .sub-tab.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+      box-shadow: 0 4px 12px -2px rgba(25, 95, 166, 0.4);
+    }
+
+    /* ============================================================
+       SEO PREVIEW
+    ============================================================ */
+    .seo-preview {
+      background: #fff;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      margin-top: 4px;
+    }
+
+    .seo-preview-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-light);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .seo-url {
+      font-size: 12px;
+      color: var(--success);
+      margin-bottom: 3px;
+      word-break: break-all;
+    }
+
+    .seo-title {
+      font-size: 16px;
+      color: #1a0dab;
+      font-weight: 500;
+      margin-bottom: 3px;
+      line-height: 1.35;
+    }
+
+    .seo-desc {
+      font-size: 12.5px;
+      color: #4d5156;
+      line-height: 1.5;
+    }
+
+    /* ============================================================
+       SITEMAP STATUS
+    ============================================================ */
+    .sitemap-status {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px;
+      background: var(--success-bg);
+      border-radius: var(--radius-sm);
+      border: 1px solid #c3e8d5;
+    }
+
+    .sitemap-status .icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: #fff;
+      color: var(--success);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    .sitemap-status h4 {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--success);
+      margin-bottom: 2px;
+    }
+
+    .sitemap-status p {
+      font-size: 12px;
+      color: #4a7c62;
+    }
+
+    /* ============================================================
+       MAIL SETTINGS - SERVER CONFIG CARD
+    ============================================================ */
+    .mail-config-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    .config-card {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px;
+      border: 1.5px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      background: #fafcff;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .config-card:hover {
+      border-color: var(--primary-soft-2);
+      background: #fff;
+    }
+
+    .config-card.selected {
+      border-color: var(--primary);
+      background: var(--primary-soft);
+      box-shadow: 0 0 0 3px rgba(25, 95, 166, 0.08);
+    }
+
+    .config-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 11px;
+      background: var(--primary-soft);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 17px;
+      flex-shrink: 0;
+    }
+
+    .config-card.selected .config-icon {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .config-info h4 {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 1px;
+    }
+
+    .config-info p {
+      font-size: 11.5px;
+      color: var(--text-muted);
+    }
+
+    /* ============================================================
+       RESPONSIVE BREAKPOINTS
+    ============================================================ */
+
+    /* Tablet */
+    @media (min-width: 600px) {
+      .stat-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .form-row-2 {
+        grid-template-columns: 1fr 1fr;
+      }
+      .theme-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .mail-config-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    /* Small desktop */
+    @media (min-width: 900px) {
+      .grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .grid .span-2 {
+        grid-column: span 2;
+      }
+      .stat-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+      .theme-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+      .mail-config-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    /* Large desktop */
+    @media (min-width: 1200px) {
+      .content-area {
+        padding: 28px 32px;
+      }
+      .grid {
+        gap: 24px;
+      }
+      .card {
+        padding: 26px;
+      }
+      .theme-grid {
+        grid-template-columns: repeat(5, 1fr);
+      }
+    }
+
+    /* ------------------------------------------------------------
+       MOBILE / TABLET SIDEBAR BEHAVIOUR (under 1024px)
+    ------------------------------------------------------------ */
+    @media (max-width: 1023px) {
+      .sidebar {
+        transform: translateX(-100%);
+        box-shadow: var(--shadow-lg);
+        width: 290px;
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .main {
+        margin-left: 0;
+      }
+
+      .menu-toggle {
+        display: flex;
+      }
+
+      .topbar {
+        padding: 0 16px;
+      }
+
+      .content-area {
+        padding: 18px 16px 32px;
+      }
+
+      .page-title {
+        font-size: 16px;
+      }
+    }
+
+    /* Very small phones */
+    @media (max-width: 420px) {
+      .stat-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .theme-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .mail-config-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar-right .badge-super {
+        display: none;
+      }
+
+      .card {
+        padding: 18px 16px;
+        border-radius: 14px;
+      }
+
+      .stat-value {
+        font-size: 22px;
+      }
+
+      .content-area {
+        padding: 14px 12px 28px;
+      }
+
+      .page-title {
+        font-size: 15px;
+      }
+
+      .header-actions-mobile-hide {
+        display: none;
+      }
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        transition: none !important;
+        animation: none !important;
+      }
+    }
+
+    /* Utility */
+    .hidden { display: none !important; }
+    .mt-2 { margin-top: 8px; }
+    .mt-3 { margin-top: 16px; }
+    .mb-2 { margin-bottom: 8px; }
+    .text-muted { color: var(--text-muted); font-size: 12.5px; }
+    .divider { height: 1px; background: var(--border-light); margin: 18px 0; }
+  </style>
+</head>
+<body>
+
+<div class="app-shell">
+
+  <!-- ============================================================
+       SIDEBAR
+  ============================================================ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-mark">O</div>
+      <div class="brand-text">onlin<span>.in</span></div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-group-label">Overview</div>
+
+      <div class="nav-item active" data-view="dashboard">
+        <i class="fas fa-chart-pie"></i>
+        <span>Dashboard</span>
+      </div>
+
+      <div class="nav-item" data-view="analytics">
+        <i class="fas fa-chart-line"></i>
+        <span>Analytics</span>
+        <span class="nav-badge">Live</span>
+      </div>
+
+      <div class="nav-group-label">Management</div>
+
+      <div class="nav-item" data-view="users">
+        <i class="fas fa-users"></i>
+        <span>Users</span>
+      </div>
+
+      <div class="nav-item" data-view="stores">
+        <i class="fas fa-store"></i>
+        <span>Stores</span>
+      </div>
+
+      <div class="nav-item" data-view="business-cards">
+        <i class="fas fa-id-card"></i>
+        <span>Business Cards</span>
+      </div>
+
+      <div class="nav-item" data-view="orders">
+        <i class="fas fa-shopping-bag"></i>
+        <span>Orders & Products</span>
+        <span class="nav-badge">24</span>
+      </div>
+
+      <div class="nav-group-label">Appearance</div>
+
+      <div class="nav-item" data-view="themes">
+        <i class="fas fa-palette"></i>
+        <span>Themes</span>
+      </div>
+
+      <div class="nav-item" data-view="categories">
+        <i class="fas fa-tags"></i>
+        <span>Categories</span>
+      </div>
+
+      <div class="nav-group-label">Locations</div>
+
+      <div class="nav-item" data-view="states">
+        <i class="fas fa-map-marked-alt"></i>
+        <span>States</span>
+      </div>
+
+      <div class="nav-item" data-view="cities">
+        <i class="fas fa-city"></i>
+        <span>Cities</span>
+      </div>
+
+      <div class="nav-group-label">Configuration</div>
+
+      <div class="nav-item" data-view="seo">
+        <i class="fas fa-search"></i>
+        <span>SEO Settings</span>
+      </div>
+
+      <div class="nav-item" data-view="sitemaps">
+        <i class="fas fa-sitemap"></i>
+        <span>Sitemaps</span>
+      </div>
+
+      <div class="nav-item" data-view="mail">
+        <i class="fas fa-envelope"></i>
+        <span>Mail Settings</span>
+      </div>
+
+      <div class="nav-item" data-view="settings">
+        <i class="fas fa-sliders-h"></i>
+        <span>General Settings</span>
+      </div>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="admin-profile">
+        <div class="admin-avatar">SA</div>
+        <div class="admin-info">
+          <div class="admin-name">Super Admin</div>
+          <div class="admin-role"><i class="fas fa-shield-alt"></i> Full Access</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Mobile overlay -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- ============================================================
+       MAIN CONTENT
+  ============================================================ -->
+  <div class="main">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
+          <i class="fas fa-bars"></i>
+        </button>
+        <div class="page-title" id="pageTitle">Dashboard</div>
+      </div>
+
+      <div class="topbar-right">
+        <div class="badge-super header-actions-mobile-hide">
+          <i class="fas fa-shield-alt"></i> Super Admin
+        </div>
+        <button class="topbar-icon-btn" aria-label="Notifications">
+          <i class="fas fa-bell"></i>
+          <span class="dot"></span>
+        </button>
+        <button class="topbar-icon-btn header-actions-mobile-hide" aria-label="Help">
+          <i class="fas fa-circle-question"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- CONTENT AREA -->
+    <main class="content-area">
+
+      <!-- ============================================================
+           VIEW: DASHBOARD
+      ============================================================ -->
+      <section class="view active" id="view-dashboard">
+        <div class="grid">
+
+          <div class="card span-2">
+            <div class="card-header">
+              <div class="card-title">
+                <div class="icon-box"><i class="fas fa-chart-pie"></i></div>
+                Platform Overview
+              </div>
+              <div class="card-actions">
+                <button class="btn btn-ghost btn-sm"><i class="fas fa-calendar"></i> Last 30 days</button>
+              </div>
+            </div>
+            <div class="stat-grid">
+              <div class="stat-card">
+                <div class="stat-label"><i class="fas fa-users"></i> Total Users</div>
+                <div class="stat-value">2,847</div>
+                <span class="stat-trend"><i class="fas fa-arrow-up"></i> 12.3%</span>
+              </div>
+              <div class="stat-card">
+                <div class="stat-label"><i class="fas fa-store"></i> Active Stores</div>
+                <div class="stat-value">412</div>
+                <span class="stat-trend"><i class="fas fa-arrow-up"></i> 6.8%</span>
+              </div>
+              <div class="stat-card">
+                <div class="stat-label"><i class="fas fa-id-card"></i> Business Cards</div>
+                <div class="stat-value">1,294</div>
+                <span class="stat-trend"><i class="fas fa-arrow-up"></i> 7.8%</span>
+              </div>
+              <div class="stat-card">
+                <div class="stat-label"><i class="fas fa-shopping-bag"></i> Total Orders</div>
+                <div class="stat-value">1,846</div>
+                <span class="stat-trend down"><i class="fas fa-arrow-down"></i> 2.1%</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card span-2">
+            <div class="card-header">
+              <div class="card-title">
+                <div class="icon-box"><i class="fas fa-shield-halved"></i></div>
+                Super Admin · Recent Stores
+              </div>
+              <button class="btn btn-outline btn-sm"><i class="fas fa-plus"></i> Add Store</button>
+            </div>
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr><th>Store URL</th><th>Owner</th><th>Orders</th><th>Status</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>onlin.in/xyz</td><td>Rahul S.</td><td>342</td><td><span class="status-pill active">Active</span></td></tr>
+                  <tr><td>onlin.in/abc</td><td>Priya M.</td><td>256</td><td><span class="status-pill active">Active</span></td></tr>
+                  <tr><td>onlin.in/def</td><td>Amit K.</td><td>98</td><td><span class="status-pill pending">Pending</span></td></tr>
+                  <tr><td>onlin.in/ghi</td><td>Neha G.</td><td>421</td><td><span class="status-pill active">Active</span></td></tr>
+                  <tr><td>onlin.in/jkl</td><td>Vikram R.</td><td>12</td><td><span class="status-pill draft">Draft</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ============================================================
+           VIEW: ANALYTICS
+      ============================================================ -->
+      <section class="view" id="view-analytics">
+        <div class="grid">
+          <div class="card span-2">
+            <div class="card-header">
+              <div class="card-title">
+                <div class="icon-box"><i class="fas fa-user-chart"></i></div>
+                User Analytics
+              </div>
+              <button class="btn btn-ghost btn-sm"><i class="fas fa-download"></i> Export</button>
+            </div>
+            <div class="stat-grid">
+              <div class="stat-card">
+                <div class="stat-label"><i class="fas fa-users"></i> Total Users</div>
+                <div class="stat-value">2,847</div>
+                <span class="stat-trend"><i class="fas fa-arrow-up"></i> 12.3%</span>
+              </div>
+              <div class="stat-card">
+                <div class="stat-label"><i class="fas fa-user-plus"></i> New (7d)</div>
+                <div class="stat-value">189</div>
+                <span class="stat-trend"><i class="fas fa-arrow-up"></i> 8.1%</span>
+              </div>
+              <div class="stat-card">
+                <div class="stat-label"><i class="fas fa-clock"></i> Active Now</div>
+                <div class="stat-value">342</div>
+                <span class="stat-trend"><i class="fas fa-arrow-up"></i> 5.7%</span>
+              </div>
+              <div class="stat-card">
+                <div class="stat-label"><i class="fas fa-repeat"></i> Retention</div>
+                <div class="stat-value">68%</div>
+                <span class="stat-trend down"><i class="fas fa-arrow-down"></i> 2.1%</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card span-2">
+            <div class="card-header">
+              <div class="card-title">
+                <div class="icon-box"><i class="fas fa-address-card"></i></div>
+                Business Card Analytics
+              </div>
+            </div>
+            <div class="stat-grid">
+              <div class="stat-card">
+                <div class="stat-label"><i class="fas fa-id-card"></i> Total Cards</div>
+                <div class="stat-value">1,294</div>
+                <span class="stat-trend"><i class="fas fa-arrow-up"></i> 7.8%</span>
+              </div>
+              <div class="stat-card">
+                <div class="stat-label"><i class="fas fa-eye"></i> Views</div>
+                <div class="stat-value">18.4k</div>
+                <span class="stat-trend"><i class="fas fa-arrow-up"></i> 15.2%</span>
+              </div>
+              <div class="stat-card">
+                <div class="stat-label"><i class="fas fa-hand-pointer"></i> Clicks</div>
+                <div class="stat-value">3,692</div>
+                <span class="stat-trend"><i class="fas fa-arrow-up"></i> 9.6%</span>
+              </div>
+              <div class="stat-card">
+                <div class="stat-label"><i class="fas fa-download"></i> Downloads</div>
+                <div class="stat-value">924</div>
+                <span class="stat-trend"><i class="fas fa-arrow-up"></i> 3.4%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           VIEW: USERS
+      ============================================================ -->
+      <section class="view" id="view-users">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <div class="icon-box"><i class="fas fa-users"></i></div>
+              All Users
+            </div>
+            <button class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> Add User</button>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr><th>Name</th><th>Email</th><th>Role</th><th>Joined</th><th>Status</th><th></th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Rahul Sharma</td><td>rahul@xyz.com</td><td>Store Owner</td><td>2h ago</td><td><span class="status-pill active">Active</span></td><td><button class="action-icon"><i class="fas fa-ellipsis-v"></i></button></td></tr>
+                <tr><td>Priya Mehta</td><td>priya@abc.com</td><td>Store Owner</td><td>5h ago</td><td><span class="status-pill active">Active</span></td><td><button class="action-icon"><i class="fas fa-ellipsis-v"></i></button></td></tr>
+                <tr><td>Amit Kumar</td><td>amit@def.com</td><td>Customer</td><td>1d ago</td><td><span class="status-pill pending">Pending</span></td><td><button class="action-icon"><i class="fas fa-ellipsis-v"></i></button></td></tr>
+                <tr><td>Neha Gupta</td><td>neha@ghi.com</td><td>Store Owner</td><td>1d ago</td><td><span class="status-pill active">Active</span></td><td><button class="action-icon"><i class="fas fa-ellipsis-v"></i></button></td></tr>
+                <tr><td>Vikram Rao</td><td>vikram@jkl.com</td><td>Customer</td><td>3d ago</td><td><span class="status-pill disabled">Suspended</span></td><td><button class="action-icon"><i class="fas fa-ellipsis-v"></i></button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           VIEW: STORES
+      ============================================================ -->
+      <section class="view" id="view-stores">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <div class="icon-box"><i class="fas fa-store"></i></div>
+              Stores
+            </div>
+            <button class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> Create Store</button>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr><th>Store URL</th><th>Owner</th><th>Products</th><th>Orders</th><th>Status</th><th></th></tr>
+              </thead>
+              <tbody>
+                <tr><td>onlin.in/xyz</td><td>Rahul S.</td><td>126</td><td>342</td><td><span class="status-pill active">Active</span></td><td><button class="action-icon"><i class="fas fa-external-link-alt"></i></button></td></tr>
+                <tr><td>onlin.in/abc</td><td>Priya M.</td><td>89</td><td>256</td><td><span class="status-pill active">Active</span></td><td><button class="action-icon"><i class="fas fa-external-link-alt"></i></button></td></tr>
+                <tr><td>onlin.in/def</td><td>Amit K.</td><td>34</td><td>98</td><td><span class="status-pill pending">Pending</span></td><td><button class="action-icon"><i class="fas fa-external-link-alt"></i></button></td></tr>
+                <tr><td>onlin.in/ghi</td><td>Neha G.</td><td>156</td><td>421</td><td><span class="status-pill active">Active</span></td><td><button class="action-icon"><i class="fas fa-external-link-alt"></i></button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           VIEW: BUSINESS CARDS
+      ============================================================ -->
+      <section class="view" id="view-business-cards">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <div class="icon-box"><i class="fas fa-id-card"></i></div>
+              Business Cards
+            </div>
+            <button class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> New Card</button>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr><th>Name</th><th>Company</th><th>Views</th><th>Clicks</th><th>Status</th><th></th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Rahul Sharma</td><td>XYZ Retail</td><td>1,240</td><td>312</td><td><span class="status-pill active">Active</span></td><td><button class="action-icon"><i class="fas fa-ellipsis-v"></i></button></td></tr>
+                <tr><td>Priya Mehta</td><td>ABC Traders</td><td>980</td><td>241</td><td><span class="status-pill active">Active</span></td><td><button class="action-icon"><i class="fas fa-ellipsis-v"></i></button></td></tr>
+                <tr><td>Amit Kumar</td><td>DEF Services</td><td>765</td><td>187</td><td><span class="status-pill pending">Pending</span></td><td><button class="action-icon"><i class="fas fa-ellipsis-v"></i></button></td></tr>
+                <tr><td>Neha Gupta</td><td>GHI Studio</td><td>1,120</td><td>298</td><td><span class="status-pill active">Active</span></td><td><button class="action-icon"><i class="fas fa-ellipsis-v"></i></button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           VIEW: ORDERS & PRODUCTS
+      ============================================================ -->
+      <section class="view" id="view-orders">
+        <div class="grid">
+          <div class="card span-2">
+            <div class="card-header">
+              <div class="card-title">
+                <div class="icon-box"><i class="fas fa-shopping-bag"></i></div>
+                Orders
+              </div>
+              <button class="btn btn-ghost btn-sm"><i class="fas fa-filter"></i> Filter</button>
+            </div>
+            <div class="stat-grid">
+              <div class="stat-card">
+                <div class="stat-label"><i class="fas fa-receipt"></i> Total</div>
+                <div class="stat-value">1,846</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-label"><i class="fas fa-indian-rupee-sign"></i> Revenue</div>
+                <div class="stat-value">₹4.2L</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-label"><i class="fas fa-clock"></i> Pending</div>
+                <div class="stat-value">24</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-label"><i class="fas fa-check"></i> Completed</div>
+                <div class="stat-value">1,780</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card span-2">
+            <div class="card-header">
+              <div class="card-title">
+                <div class="icon-box"><i class="fas fa-box"></i></div>
+                Products & Enquiries
+              </div>
+            </div>
+            <div class="stat-grid">
+              <div class="stat-card">
+                <div class="stat-label"><i class="fas fa-boxes"></i> Total Products</div>
+                <div class="stat-value">1,294</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-label"><i class="fas fa-check-circle"></i> Active</div>
+                <div class="stat-value">1,120</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-label"><i class="fas fa-triangle-exclamation"></i> Out of stock</div>
+                <div class="stat-value">48</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-label"><i class="fas fa-question-circle"></i> Enquiries</div>
+                <div class="stat-value">18</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           VIEW: THEMES (image-based)
+      ============================================================ -->
+      <section class="view" id="view-themes">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <div class="icon-box"><i class="fas fa-palette"></i></div>
+              Themes
+            </div>
+            <div class="card-actions">
+              <button class="btn btn-outline btn-sm"><i class="fas fa-upload"></i> Upload Theme</button>
+            </div>
+          </div>
+          <p class="text-muted mb-2">Choose a theme for the storefront. Each theme includes its own layout, colour palette and category support.</p>
+
+          <div class="sub-tabs">
+            <button class="sub-tab active">All Themes</button>
+            <button class="sub-tab">Retail</button>
+            <button class="sub-tab">Services</button>
+            <button class="sub-tab">Food</button>
+            <button class="sub-tab">Fashion</button>
+            <button class="sub-tab">Electronics</button>
+          </div>
+
+          <div class="theme-grid">
+
+            <div class="theme-card active">
+              <div class="theme-preview">
+                <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&q=80&auto=format&fit=crop" alt="Modern Retail theme preview" loading="lazy">
+                <div class="theme-check"><i class="fas fa-check"></i></div>
+              </div>
+              <div class="theme-info">
+                <div class="theme-name">Modern Retail</div>
+                <div class="theme-cat">Retail · Fashion</div>
+              </div>
+            </div>
+
+            <div class="theme-card">
+              <div class="theme-preview">
+                <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&q=80&auto=format&fit=crop" alt="Service Pro theme preview" loading="lazy">
+                <div class="theme-check"><i class="fas fa-check"></i></div>
+              </div>
+              <div class="theme-info">
+                <div class="theme-name">Service Pro</div>
+                <div class="theme-cat">Services · Consulting</div>
+              </div>
+            </div>
+
+            <div class="theme-card">
+              <div class="theme-preview">
+                <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&q=80&auto=format&fit=crop" alt="Foodie theme preview" loading="lazy">
+                <div class="theme-check"><i class="fas fa-check"></i></div>
+              </div>
+              <div class="theme-info">
+                <div class="theme-name">Foodie</div>
+                <div class="theme-cat">Food · Restaurant</div>
+              </div>
+            </div>
+
+            <div class="theme-card">
+              <div class="theme-preview">
+                <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=400&q=80&auto=format&fit=crop" alt="Fashion Hub theme preview" loading="lazy">
+                <div class="theme-check"><i class="fas fa-check"></i></div>
+              </div>
+              <div class="theme-info">
+                <div class="theme-name">Fashion Hub</div>
+                <div class="theme-cat">Fashion · Lifestyle</div>
+              </div>
+            </div>
+
+            <div class="theme-card">
+              <div class="theme-preview">
+                <img src="https://images.unsplash.com/photo-1498049794561-7780e7231661?w=400&q=80&auto=format&fit=crop" alt="Tech Store theme preview" loading="lazy">
+                <div class="theme-check"><i class="fas fa-check"></i></div>
+              </div>
+              <div class="theme-info">
+                <div class="theme-name">Tech Store</div>
+                <div class="theme-cat">Electronics · Gadgets</div>
+              </div>
+            </div>
+
+            <div class="theme-card">
+              <div class="theme-preview">
+                <img src="https://images.unsplash.com/photo-1556740758-90de374c12ad?w=400&q=80&auto=format&fit=crop" alt="Minimal Shop theme preview" loading="lazy">
+                <div class="theme-check"><i class="fas fa-check"></i></div>
+              </div>
+              <div class="theme-info">
+                <div class="theme-name">Minimal Shop</div>
+                <div class="theme-cat">Retail · Minimal</div>
+              </div>
+            </div>
+
+            <div class="theme-card">
+              <div class="theme-preview">
+                <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=400&q=80&auto=format&fit=crop" alt="Business Pro theme preview" loading="lazy">
+                <div class="theme-check"><i class="fas fa-check"></i></div>
+              </div>
+              <div class="theme-info">
+                <div class="theme-name">Business Pro</div>
+                <div class="theme-cat">Services · B2B</div>
+              </div>
+            </div>
+
+            <div class="theme-card">
+              <div class="theme-preview">
+                <img src="https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=400&q=80&auto=format&fit=crop" alt="Grocer theme preview" loading="lazy">
+                <div class="theme-check"><i class="fas fa-check"></i></div>
+              </div>
+              <div class="theme-info">
+                <div class="theme-name">Grocer</div>
+                <div class="theme-cat">Food · Grocery</div>
+              </div>
+            </div>
+
+            <div class="theme-card">
+              <div class="theme-preview">
+                <img src="https://images.unsplash.com/photo-1445205170230-053b83016050?w=400&q=80&auto=format&fit=crop" alt="Boutique theme preview" loading="lazy">
+                <div class="theme-check"><i class="fas fa-check"></i></div>
+              </div>
+              <div class="theme-info">
+                <div class="theme-name">Boutique</div>
+                <div class="theme-cat">Fashion · Clothing</div>
+              </div>
+            </div>
+
+            <div class="theme-card">
+              <div class="theme-preview">
+                <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400&q=80&auto=format&fit=crop" alt="Cafe theme preview" loading="lazy">
+                <div class="theme-check"><i class="fas fa-check"></i></div>
+              </div>
+              <div class="theme-info">
+                <div class="theme-name">Cafe</div>
+                <div class="theme-cat">Food · Coffee</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           VIEW: CATEGORIES
+      ============================================================ -->
+      <section class="view" id="view-categories">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <div class="icon-box"><i class="fas fa-tags"></i></div>
+              Categories
+            </div>
+            <button class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> Add Category</button>
+          </div>
+          <p class="text-muted mb-2">Categories used across stores for product organisation and theme filtering.</p>
+
+          <div class="list-group">
+            <div class="list-item">
+              <div class="list-item-left">
+                <div class="list-item-icon"><i class="fas fa-shirt"></i></div>
+                <div>
+                  <div class="list-item-text">Fashion & Apparel</div>
+                  <div class="list-item-sub">24 stores · 128 products</div>
+                </div>
+              </div>
+              <div class="list-item-actions">
+                <button class="action-icon"><i class="fas fa-pen"></i></button>
+                <button class="action-icon danger"><i class="fas fa-trash"></i></button>
+              </div>
+            </div>
+
+            <div class="list-item">
+              <div class="list-item-left">
+                <div class="list-item-icon"><i class="fas fa-utensils"></i></div>
+                <div>
+                  <div class="list-item-text">Food & Beverages</div>
+                  <div class="list-item-sub">18 stores · 94 products</div>
+                </div>
+              </div>
+              <div class="list-item-actions">
+                <button class="action-icon"><i class="fas fa-pen"></i></button>
+                <button class="action-icon danger"><i class="fas fa-trash"></i></button>
+              </div>
+            </div>
+
+            <div class="list-item">
+              <div class="list-item-left">
+                <div class="list-item-icon"><i class="fas fa-laptop"></i></div>
+                <div>
+                  <div class="list-item-text">Electronics</div>
+                  <div class="list-item-sub">12 stores · 76 products</div>
+                </div>
+              </div>
+              <div class="list-item-actions">
+                <button class="action-icon"><i class="fas fa-pen"></i></button>
+                <button class="action-icon danger"><i class="fas fa-trash"></i></button>
+              </div>
+            </div>
+
+            <div class="list-item">
+              <div class="list-item-left">
+                <div class="list-item-icon"><i class="fas fa-briefcase"></i></div>
+                <div>
+                  <div class="list-item-text">Services</div>
+                  <div class="list-item-sub">32 stores · 61 products</div>
+                </div>
+              </div>
+              <div class="list-item-actions">
+                <button class="action-icon"><i class="fas fa-pen"></i></button>
+                <button class="action-icon danger"><i class="fas fa-trash"></i></button>
+              </div>
+            </div>
+
+            <div class="list-item">
+              <div class="list-item-left">
+                <div class="list-item-icon"><i class="fas fa-house-chimney"></i></div>
+                <div>
+                  <div class="list-item-text">Home & Living</div>
+                  <div class="list-item-sub">9 stores · 43 products</div>
+                </div>
+              </div>
+              <div class="list-item-actions">
+                <button class="action-icon"><i class="fas fa-pen"></i></button>
+                <button class="action-icon danger"><i class="fas fa-trash"></i></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           VIEW: STATES
+      ============================================================ -->
+      <section class="view" id="view-states">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <div class="icon-box"><i class="fas fa-map-marked-alt"></i></div>
+              States
+            </div>
+            <button class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> Add State</button>
+          </div>
+          <p class="text-muted mb-2">Manage states available for store addresses and city mapping.</p>
+
+          <div class="list-group">
+            <div class="list-item">
+              <div class="list-item-left">
+                <div class="list-item-icon"><i class="fas fa-map-pin"></i></div>
+                <div>
+                  <div class="list-item-text">Maharashtra</div>
+                  <div class="list-item-sub">36 cities · 142 stores</div>
+                </div>
+              </div>
+              <div class="list-item-actions">
+                <button class="action-icon"><i class="fas fa-pen"></i></button>
+                <button class="action-icon danger"><i class="fas fa-trash"></i></button>
+              </div>
+            </div>
+
+            <div class="list-item">
+              <div class="list-item-left">
+                <div class="list-item-icon"><i class="fas fa-map-pin"></i></div>
+                <div>
+                  <div class="list-item-text">Delhi</div>
+                  <div class="list-item-sub">12 cities · 98 stores</div>
+                </div>
+              </div>
+              <div class="list-item-actions">
+                <button class="action-icon"><i class="fas fa-pen"></i></button>
+                <button class="action-icon danger"><i class="fas fa-trash"></i></button>
+              </div>
+            </div>
+
+            <div class="list-item">
+              <div class="list-item-left">
+                <div class="list-item-icon"><i class="fas fa-map-pin"></i></div>
+                <div>
+                  <div class="list-item-text">Karnataka</div>
+                  <div class="list-item-sub">28 cities · 76 stores</div>
+                </div>
+              </div>
+              <div class="list-item-actions">
+                <button class="action-icon"><i class="fas fa-pen"></i></button>
+                <button class="action-icon danger"><i class="fas fa-trash"></i></button>
+              </div>
+            </div>
+
+            <div class="list-item">
+              <div class="list-item-left">
+                <div class="list-item-icon"><i class="fas fa-map-pin"></i></div>
+                <div>
+                  <div class="list-item-text">Tamil Nadu</div>
+                  <div class="list-item-sub">31 cities · 64 stores</div>
+                </div>
+              </div>
+              <div class="list-item-actions">
+                <button class="action-icon"><i class="fas fa-pen"></i></button>
+                <button class="action-icon danger"><i class="fas fa-trash"></i></button>
+              </div>
+            </div>
+
+            <div class="list-item">
+              <div class="list-item-left">
+                <div class="list-item-icon"><i class="fas fa-map-pin"></i></div>
+                <div>
+                  <div class="list-item-text">Gujarat</div>
+                  <div class="list-item-sub">26 cities · 52 stores</div>
+                </div>
+              </div>
+              <div class="list-item-actions">
+                <button class="action-icon"><i class="fas fa-pen"></i></button>
+                <button class="action-icon danger"><i class="fas fa-trash"></i></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           VIEW: CITIES
+      ============================================================ -->
+      <section class="view" id="view-cities">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <div class="icon-box"><i class="fas fa-city"></i></div>
+              Cities
+            </div>
+            <button class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> Add City</button>
+          </div>
+          <p class="text-muted mb-2">Cities mapped to states for store locator and local SEO.</p>
+
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr><th>City</th><th>State</th><th>Stores</th><th>SEO Slug</th><th></th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Mumbai</td><td>Maharashtra</td><td>64</td><td>mumbai</td><td><button class="action-icon"><i class="fas fa-ellipsis-v"></i></button></td></tr>
+                <tr><td>Pune</td><td>Maharashtra</td><td>38</td><td>pune</td><td><button class="action-icon"><i class="fas fa-ellipsis-v"></i></button></td></tr>
+                <tr><td>New Delhi</td><td>Delhi</td><td>52</td><td>new-delhi</td><td><button class="action-icon"><i class="fas fa-ellipsis-v"></i></button></td></tr>
+                <tr><td>Bengaluru</td><td>Karnataka</td><td>46</td><td>bengaluru</td><td><button class="action-icon"><i class="fas fa-ellipsis-v"></i></button></td></tr>
+                <tr><td>Chennai</td><td>Tamil Nadu</td><td>29</td><td>chennai</td><td><button class="action-icon"><i class="fas fa-ellipsis-v"></i></button></td></tr>
+                <tr><td>Ahmedabad</td><td>Gujarat</td><td>24</td><td>ahmedabad</td><td><button class="action-icon"><i class="fas fa-ellipsis-v"></i></button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           VIEW: SEO SETTINGS
+      ============================================================ -->
+      <section class="view" id="view-seo">
+        <div class="grid">
+          <div class="card span-2">
+            <div class="card-header">
+              <div class="card-title">
+                <div class="icon-box"><i class="fas fa-search"></i></div>
+                SEO Settings
+              </div>
+              <button class="btn btn-primary btn-sm"><i class="fas fa-save"></i> Save Changes</button>
+            </div>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label><i class="fas fa-heading"></i> Site Title <span class="req">*</span></label>
+                <input class="form-control" type="text" value="onlin.in — Online Store Platform">
+              </div>
+
+              <div class="form-group">
+                <label><i class="fas fa-align-left"></i> Meta Description</label>
+                <textarea class="form-control" rows="3">Create your online store, manage products, orders and business cards — all in one platform.</textarea>
+              </div>
+
+              <div class="form-row-2">
+                <div class="form-group">
+                  <label><i class="fas fa-key"></i> Meta Keywords</label>
+                  <input class="form-control" type="text" value="online store, business cards, ecommerce India">
+                </div>
+                <div class="form-group">
+                  <label><i class="fas fa-link"></i> Canonical URL</label>
+                  <input class="form-control" type="url" value="https://onlin.in">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label><i class="fas fa-code"></i> Robots Meta</label>
+                <select class="form-control">
+                  <option>index, follow</option>
+                  <option>noindex, follow</option>
+                  <option>index, nofollow</option>
+                  <option>noindex, nofollow</option>
+                </select>
+              </div>
+
+              <div class="divider"></div>
+
+              <div class="form-group">
+                <label><i class="fas fa-image"></i> Open Graph Image URL</label>
+                <input class="form-control" type="url" placeholder="https://onlin.in/og-image.jpg" value="https://onlin.in/og-image.jpg">
+                <div class="form-hint">Recommended size: 1200×630px. Used when sharing on social media.</div>
+              </div>
+
+              <div class="form-group">
+                <label><i class="fas fa-twitter"></i> Twitter Handle</label>
+                <input class="form-control" type="text" value="@onlin_in">
+              </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="seo-preview-label"><i class="fas fa-eye"></i> Search Result Preview</div>
+            <div class="seo-preview">
+              <div class="seo-url">https://onlin.in</div>
+              <div class="seo-title" id="seoPreviewTitle">onlin.in — Online Store Platform</div>
+              <div class="seo-desc" id="seoPreviewDesc">Create your online store, manage products, orders and business cards — all in one platform.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           VIEW: SITEMAPS
+      ============================================================ -->
+      <section class="view" id="view-sitemaps">
+        <div class="grid">
+          <div class="card span-2">
+            <div class="card-header">
+              <div class="card-title">
+                <div class="icon-box"><i class="fas fa-sitemap"></i></div>
+                Sitemaps
+              </div>
+              <button class="btn btn-primary btn-sm"><i class="fas fa-rotate"></i> Regenerate All</button>
+            </div>
+
+            <div class="sitemap-status mb-2">
+              <div class="icon"><i class="fas fa-check-circle"></i></div>
+              <div>
+                <h4>Sitemap is healthy</h4>
+                <p>Last generated 2 hours ago · 1,842 URLs indexed</p>
+              </div>
+            </div>
+
+            <div class="list-group">
+              <div class="list-item">
+                <div class="list-item-left">
+                  <div class="list-item-icon"><i class="fas fa-file-code"></i></div>
+                  <div>
+                    <div class="list-item-text">/sitemap.xml</div>
+                    <div class="list-item-sub">Main sitemap · 1,842 URLs · Last updated 2h ago</div>
+                  </div>
+                </div>
+                <div class="list-item-actions">
+                  <button class="action-icon"><i class="fas fa-rotate"></i></button>
+                  <button class="action-icon"><i class="fas fa-external-link-alt"></i></button>
+                </div>
+              </div>
+
+              <div class="list-item">
+                <div class="list-item-left">
+                  <div class="list-item-icon"><i class="fas fa-store"></i></div>
+                  <div>
+                    <div class="list-item-text">/sitemap-stores.xml</div>
+                    <div class="list-item-sub">412 stores · Last updated 2h ago</div>
+                  </div>
+                </div>
+                <div class="list-item-actions">
+                  <button class="action-icon"><i class="fas fa-rotate"></i></button>
+                  <button class="action-icon"><i class="fas fa-external-link-alt"></i></button>
+                </div>
+              </div>
+
+              <div class="list-item">
+                <div class="list-item-left">
+                  <div class="list-item-icon"><i class="fas fa-box"></i></div>
+                  <div>
+                    <div class="list-item-text">/sitemap-products.xml</div>
+                    <div class="list-item-sub">1,294 products · Last updated 2h ago</div>
+                  </div>
+                </div>
+                <div class="list-item-actions">
+                  <button class="action-icon"><i class="fas fa-rotate"></i></button>
+                  <button class="action-icon"><i class="fas fa-external-link-alt"></i></button>
+                </div>
+              </div>
+
+              <div class="list-item">
+                <div class="list-item-left">
+                  <div class="list-item-icon"><i class="fas fa-id-card"></i></div>
+                  <div>
+                    <div class="list-item-text">/sitemap-cards.xml</div>
+                    <div class="list-item-sub">1,294 business cards · Last updated 2h ago</div>
+                  </div>
+                </div>
+                <div class="list-item-actions">
+                  <button class="action-icon"><i class="fas fa-rotate"></i></button>
+                  <button class="action-icon"><i class="fas fa-external-link-alt"></i></button>
+                </div>
+              </div>
+
+              <div class="list-item">
+                <div class="list-item-left">
+                  <div class="list-item-icon"><i class="fas fa-city"></i></div>
+                  <div>
+                    <div class="list-item-text">/sitemap-cities.xml</div>
+                    <div class="list-item-sub">186 city pages · Last updated 2h ago</div>
+                  </div>
+                </div>
+                <div class="list-item-actions">
+                  <button class="action-icon"><i class="fas fa-rotate"></i></button>
+                  <button class="action-icon"><i class="fas fa-external-link-alt"></i></button>
+                </div>
+              </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="form-row-2">
+              <div class="form-group">
+                <label><i class="fas fa-clock"></i> Auto-generate frequency</label>
+                <select class="form-control">
+                  <option>Every 6 hours</option>
+                  <option>Every 12 hours</option>
+                  <option>Daily</option>
+                  <option>Weekly</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label><i class="fas fa-globe"></i> Ping search engines</label>
+                <select class="form-control">
+                  <option>Google & Bing</option>
+                  <option>Google only</option>
+                  <option>Bing only</option>
+                  <option>Disabled</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           VIEW: MAIL SETTINGS
+      ============================================================ -->
+      <section class="view" id="view-mail">
+        <div class="grid">
+          <div class="card span-2">
+            <div class="card-header">
+              <div class="card-title">
+                <div class="icon-box"><i class="fas fa-envelope"></i></div>
+                Mail Settings
+              </div>
+              <button class="btn btn-primary btn-sm"><i class="fas fa-save"></i> Save Settings</button>
+            </div>
+
+            <p class="text-muted mb-2">Choose a mail provider or configure a custom SMTP server. Used for order updates, enquiry notifications and password resets.</p>
+
+            <div class="mail-config-grid">
+              <div class="config-card selected">
+                <div class="config-icon"><i class="fas fa-server"></i></div>
+                <div class="config-info">
+                  <h4>SMTP Server</h4>
+                  <p>Custom mail server</p>
+                </div>
+              </div>
+              <div class="config-card">
+                <div class="config-icon"><i class="fas fa-cloud"></i></div>
+                <div class="config-info">
+                  <h4>Amazon SES</h4>
+                  <p>Scalable cloud email</p>
+                </div>
+              </div>
+              <div class="config-card">
+                <div class="config-icon"><i class="fas fa-paper-plane"></i></div>
+                <div class="config-info">
+                  <h4>SendGrid</h4>
+                  <p>Reliable delivery</p>
+                </div>
+              </div>
+              <div class="config-card">
+                <div class="config-icon"><i class="fas fa-feather"></i></div>
+                <div class="config-info">
+                  <h4>Mailgun</h4>
+                  <p>Developer friendly</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="form-grid">
+              <div class="form-row-2">
+                <div class="form-group">
+                  <label><i class="fas fa-server"></i> SMTP Host <span class="req">*</span></label>
+                  <input class="form-control" type="text" placeholder="smtp.example.com" value="smtp.onlin.in">
+                </div>
+                <div class="form-group">
+                  <label><i class="fas fa-hashtag"></i> SMTP Port <span class="req">*</span></label>
+                  <input class="form-control" type="number" placeholder="587" value="587">
+                </div>
+              </div>
+
+              <div class="form-row-2">
+                <div class="form-group">
+                  <label><i class="fas fa-user"></i> SMTP Username <span class="req">*</span></label>
+                  <input class="form-control" type="text" placeholder="user@example.com" value="mailer@onlin.in">
+                </div>
+                <div class="form-group">
+                  <label><i class="fas fa-lock"></i> SMTP Password <span class="req">*</span></label>
+                  <input class="form-control" type="password" placeholder="••••••••" value="securepassword123">
+                </div>
+              </div>
+
+              <div class="form-row-2">
+                <div class="form-group">
+                  <label><i class="fas fa-shield"></i> Encryption</label>
+                  <select class="form-control">
+                    <option>TLS</option>
+                    <option>SSL</option>
+                    <option>None</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label><i class="fas fa-at"></i> From Email <span class="req">*</span></label>
+                  <input class="form-control" type="email" placeholder="no-reply@onlin.in" value="no-reply@onlin.in">
+                </div>
+              </div>
+
+              <div class="form-row-2">
+                <div class="form-group">
+                  <label><i class="fas fa-signature"></i> From Name</label>
+                  <input class="form-control" type="text" value="onlin.in Platform">
+                </div>
+                <div class="form-group">
+                  <label><i class="fas fa-reply"></i> Reply-To Email</label>
+                  <input class="form-control" type="email" value="support@onlin.in">
+                </div>
+              </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <h4>Order notifications</h4>
+                <p>Send email to store owners when a new order is placed.</p>
+              </div>
+              <button class="toggle active" aria-label="Toggle order notifications"></button>
+            </div>
+
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <h4>Enquiry alerts</h4>
+                <p>Notify admins when a new business card enquiry arrives.</p>
+              </div>
+              <button class="toggle active" aria-label="Toggle enquiry alerts"></button>
+            </div>
+
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <h4>Welcome emails</h4>
+                <p>Send a welcome email to new users after registration.</p>
+              </div>
+              <button class="toggle active" aria-label="Toggle welcome emails"></button>
+            </div>
+
+            <div class="mt-3">
+              <button class="btn btn-outline btn-sm"><i class="fas fa-paper-plane"></i> Send Test Email</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           VIEW: GENERAL SETTINGS
+      ============================================================ -->
+      <section class="view" id="view-settings">
+        <div class="grid">
+          <div class="card span-2">
+            <div class="card-header">
+              <div class="card-title">
+                <div class="icon-box"><i class="fas fa-sliders-h"></i></div>
+                General Settings
+              </div>
+              <button class="btn btn-primary btn-sm"><i class="fas fa-save"></i> Save</button>
+            </div>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label><i class="fas fa-globe"></i> Platform Name</label>
+                <input class="form-control" type="text" value="onlin.in">
+              </div>
+
+              <div class="form-row-2">
+                <div class="form-group">
+                  <label><i class="fas fa-language"></i> Default Language</label>
+                  <select class="form-control">
+                    <option>English (India)</option>
+                    <option>English (US)</option>
+                    <option>हिन्दी</option>
+                    <option>मराठी</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label><i class="fas fa-clock"></i> Timezone</label>
+                  <select class="form-control">
+                    <option>Asia/Kolkata (IST)</option>
+                    <option>UTC</option>
+                    <option>Asia/Dubai</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-row-2">
+                <div class="form-group">
+                  <label><i class="fas fa-rupee-sign"></i> Currency</label>
+                  <select class="form-control">
+                    <option>INR (₹)</option>
+                    <option>USD ($)</option>
+                    <option>AED (د.إ)</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label><i class="fas fa-phone"></i> Support Phone</label>
+                  <input class="form-control" type="tel" value="+91 98765 43210">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label><i class="fas fa-envelope"></i> Support Email</label>
+                <input class="form-control" type="email" value="support@onlin.in">
+              </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <h4>User Registration</h4>
+                <p>Allow new users to register and create a store.</p>
+              </div>
+              <button class="toggle active" aria-label="Toggle registration"></button>
+            </div>
+
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <h4>Store Approval</h4>
+                <p>Require admin approval before a new store goes live.</p>
+              </div>
+              <button class="toggle active" aria-label="Toggle store approval"></button>
+            </div>
+
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <h4>Maintenance Mode</h4>
+                <p>Temporarily disable public storefronts for maintenance.</p>
+              </div>
+              <button class="toggle" aria-label="Toggle maintenance mode"></button>
+            </div>
+
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <h4>Business Card Directory</h4>
+                <p>Show a public directory of business cards on the homepage.</p>
+              </div>
+              <button class="toggle active" aria-label="Toggle directory"></button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<script>
+  (function() {
+    'use strict';
+
+    /* ============================================================
+       SIDEBAR TOGGLE (MOBILE)
+    ============================================================ */
+    const sidebar = document.getElementById('sidebar');
+    const menuToggle = document.getElementById('menuToggle');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+    function openSidebar() {
+      sidebar.classList.add('open');
+      sidebarOverlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeSidebar() {
+      sidebar.classList.remove('open');
+      sidebarOverlay.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    menuToggle.addEventListener('click', function() {
+      if (sidebar.classList.contains('open')) {
+        closeSidebar();
+      } else {
+        openSidebar();
+      }
+    });
+
+    sidebarOverlay.addEventListener('click', closeSidebar);
+
+    // Close sidebar when a nav item is clicked on mobile
+    document.querySelectorAll('.nav-item').forEach(item => {
+      item.addEventListener('click', function() {
+        if (window.innerWidth < 1024) {
+          closeSidebar();
+        }
+      });
+    });
+
+    // Close on Escape key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && sidebar.classList.contains('open')) {
+        closeSidebar();
+      }
+    });
+
+    // Close when resizing to desktop
+    window.addEventListener('resize', function() {
+      if (window.innerWidth >= 1024) {
+        closeSidebar();
+      }
+    });
+
+    /* ============================================================
+       NAVIGATION / VIEW SWITCHING
+    ============================================================ */
+    const navItems = document.querySelectorAll('.nav-item');
+    const views = document.querySelectorAll('.view');
+    const pageTitle = document.getElementById('pageTitle');
+
+    const viewTitles = {
+      dashboard: 'Dashboard',
+      analytics: 'Analytics',
+      users: 'Users',
+      stores: 'Stores',
+      'business-cards': 'Business Cards',
+      orders: 'Orders & Products',
+      themes: 'Themes',
+      categories: 'Categories',
+      states: 'States',
+      cities: 'Cities',
+      seo: 'SEO Settings',
+      sitemaps: 'Sitemaps',
+      mail: 'Mail Settings',
+      settings: 'General Settings'
+    };
+
+    navItems.forEach(item => {
+      item.addEventListener('click', function() {
+        const viewId = this.dataset.view;
+        if (!viewId) return;
+
+        // Update active nav
+        navItems.forEach(n => n.classList.remove('active'));
+        this.classList.add('active');
+
+        // Update page title
+        pageTitle.textContent = viewTitles[viewId] || 'Dashboard';
+
+        // Hide all views
+        views.forEach(v => v.classList.remove('active'));
+
+        // Show selected view
+        const target = document.getElementById('view-' + viewId);
+        if (target) target.classList.add('active');
+
+        // Scroll to top of content
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    });
+
+    /* ============================================================
+       SUB-TABS (Themes page)
+    ============================================================ */
+    document.querySelectorAll('.sub-tabs').forEach(tabContainer => {
+      const subTabs = tabContainer.querySelectorAll('.sub-tab');
+      subTabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+          subTabs.forEach(t => t.classList.remove('active'));
+          this.classList.add('active');
+          // In a real app, filter the theme grid here
+        });
+      });
+    });
+
+    /* ============================================================
+       THEME SELECTION
+    ============================================================ */
+    const themeCards = document.querySelectorAll('.theme-card');
+    themeCards.forEach(card => {
+      card.addEventListener('click', function() {
+        themeCards.forEach(c => c.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+
+    /* ============================================================
+       MAIL CONFIG SELECTION
+    ============================================================ */
+    const configCards = document.querySelectorAll('.config-card');
+    configCards.forEach(card => {
+      card.addEventListener('click', function() {
+        configCards.forEach(c => c.classList.remove('selected'));
+        this.classList.add('selected');
+      });
+    });
+
+    /* ============================================================
+       TOGGLE SWITCHES (delegated)
+    ============================================================ */
+    document.addEventListener('click', function(e) {
+      const toggle = e.target.closest('.toggle');
+      if (toggle) {
+        toggle.classList.toggle('active');
+      }
+    });
+
+    /* ============================================================
+       SEO LIVE PREVIEW (simple demo)
+    ============================================================ */
+    const seoTitleInput = document.querySelector('#view-seo input[type="text"]');
+    const seoDescInput = document.querySelector('#view-seo textarea');
+    const seoPreviewTitle = document.getElementById('seoPreviewTitle');
+    const seoPreviewDesc = document.getElementById('seoPreviewDesc');
+
+    if (seoTitleInput && seoPreviewTitle) {
+      seoTitleInput.addEventListener('input', function() {
+        seoPreviewTitle.textContent = this.value || 'onlin.in — Online Store Platform';
+      });
+    }
+
+    if (seoDescInput && seoPreviewDesc) {
+      seoDescInput.addEventListener('input', function() {
+        seoPreviewDesc.textContent = this.value || 'Create your online store, manage products, orders and business cards — all in one platform.';
+      });
+    }
+
+    /* ============================================================
+       PREVENT BODY SCROLL LEAK ON iOS WHEN SIDEBAR OPEN
+    ============================================================ */
+    // Already handled via body overflow hidden
+
+    /* ============================================================
+       LOG READY
+    ============================================================ */
+    console.log('%c onlin.in · Super Admin ready ', 'background:#195fa6;color:#fff;padding:4px 8px;border-radius:4px;font-weight:600;');
+  })();
+</script>
+
+</body>
+</html>
